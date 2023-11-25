@@ -17,13 +17,16 @@ const User = mongoose.model(
       required: true,
     },
     cpf: {
-        type: String,
-        required: true,
-      },
+      type: String,
+      required: true,
+    },
+    data:{
+      type: Date,
+      required: true,
+    },
     image: {
       type: String,
     },
-  
   }, {timestamps: true}),
 )
 
