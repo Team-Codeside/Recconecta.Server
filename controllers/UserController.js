@@ -79,35 +79,47 @@ module.exports = class UserController {
             } catch(error) {
                 res.status(500).json({message: error})
             }      
-    }
-
-    //Função de login no sistema
-    static async login (req,res){
-        const {email, password} = req.body
-
-        if (!email) {
-            res.status(422).json({ message: 'O e-mail é obrigatório!' })
-            return
-        }
-        if (!password) {
-            res.status(422).json({ message: 'A senha é obrigatória!' })
-            return
         }
 
-        // checagem da existência do usuário
-        const user = await User.findOne({ email: email })
-        if (!user) {
-            res.status(422).json({ message: 'Não há usuário cadastrado com este e-mail!' })
-            return
-        }
-        // checagem da senha digitada com a senha registrada
-            const checkPassword = await bcrypt.compare(password, user.password)
+        //Função de login no sistema
+        static async login (req,res){
+            const {email, password} = req.body
 
-            if (!checkPassword) {
-            return res.status(422).json({ message: 'Senha inválida' })
+            if (!email) {
+                res.status(422).json({ message: 'O e-mail é obrigatório!' })
+                return
+            }
+            if (!password) {
+                res.status(422).json({ message: 'A senha é obrigatória!' })
+                return
             }
 
-        
-        
+            // checagem da existência do usuário
+            const user = await User.findOne({ email: email })
+            if (!user) {
+                res.status(422).json({ message: 'Não há usuário cadastrado com este e-mail!' })
+                return
+            }
+            // checagem da senha digitada com a senha registrada
+                const checkPassword = await bcrypt.compare(password, user.password)
+
+                if (!checkPassword) {
+                res.status(422).json({ message: 'Senha inválida' })
+                return
+                }
+                await createUserToken(user, req, res) //logando o usuário pela função login
+            }   
+
+
+            //checagem de usuário  em uso 
+            static async checkUser (req, res){
+                let currentUser
+                console.log(req.headers.authorization)
+                
+                if(req.headers.authorization){
+                } else{ 
+                    currentUser = null
+                } 
+                res.status(200).send(currentUser)
+            }
     }
-}
