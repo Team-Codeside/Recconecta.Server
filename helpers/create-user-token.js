@@ -5,8 +5,10 @@ const createUserToken = async(user, req ,res) => {
     //Criação do token
     const token = jwt.sign({ 
         name: user.name,
-        id: user._id
-    }, "mysecret") //Fortificação do toker obs:alterar para uma string mais complexa
+        id: user._id,
+    }, 
+    'mysecret',//Fortificação do toker obs:alterar para uma string mais complexa
+    ) 
 
     //Resposta do token
     res.status(200).json({
