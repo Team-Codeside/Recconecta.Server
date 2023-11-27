@@ -15,7 +15,12 @@ app.use (express.static('public'))
 
 //routes 
 const UserRoutes = require ('./routes/UserRoutes')
+const EventoRoutes = require('./routes/EventoRoutes')
+
+
 
 app.use('/users', UserRoutes)
+app.use('/eventos',EventoRoutes )
+
 
 app.listen(5000)
