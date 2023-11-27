@@ -128,6 +128,7 @@ module.exports = class EventoController{
     static async getEventoById(req,res){
         const id = req.params.id
         
+        //checando a validade do id
         if(!ObjectId.isValid(id)) {
             res.status(422).json({ message: 'ID inválido!' })
             return
@@ -144,4 +145,41 @@ module.exports = class EventoController{
             evento: evento, 
         })   
     }
+
+    //Deletando eventos
+
+    static async removeEventoById(req,res) {
+        const id = req.params.id
+
+        //checando a validade do id
+        if(!ObjectId.isValid(id)){
+            res.status(422).json({message: 'Id inválido'})
+            return
+        }
+
+        //checando se o evento existe
+        const evento = await Evento.findOne({_id: id})
+
+        if(!evento) {
+            res.status(404).json({message: 'Evento não encontrado!'})
+            return
+        }
+        //checagem se foi o usúario que criou o evento
+
+        const token = getToken(req)
+        const user = await getUserByToken(token)
+
+        if (evento.user._id.toString() != user._id.toString()) {
+            res.status(404).json({
+              message:'Houve um problema em processar sua solicitação, tente novamente mais tarde!',})
+              return
+        }
+
+
+        //excluindo o evendo
+        await Evento.findByIdAndDelete(id)
+        res.status(200).json({ message: 'Evento removido com sucesso!'})
+        return
+    }
+
 }
