@@ -10,26 +10,27 @@ const Evento = mongoose.model(
     },
     description: {
       type: String,
+      required: true,
     },
     categoria: {
         type: String,
         required: true,
       },
     data: {
-      type: Date,
+      type: String,
       required: true,
     },
     hora: {
-        type: Date,
+        type: String,
         required: true,
       },
 
-    localizacao: {
+    endereco: {
       type: String,
       required: true,
     },
     images: {
-      type: String,
+      type: Array,
       required: true,
     },
     available: {
