@@ -8,4 +8,11 @@ const {imageUpload} = require('../helpers/image-upload')
 
 router.post('/create' , verifyToken,imageUpload.array('images'), EventoController.create)
 
+//Resgatando todos os eventos
+
+router.get('/', EventoController.getAll) //Rota pública
+router.get('/myeventos', verifyToken, EventoController.getAllUserEventos)//resgatando todos os eventos do usúario
+router.get('/myparticipantes', verifyToken, EventoController.getAllUserPaticipantes)
+
+
 module.exports = router

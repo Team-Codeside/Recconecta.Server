@@ -1,11 +1,13 @@
-const Evento = require("..//models/Evento")
-const evento = require ("..//models/Evento")
+const Evento = require("../models/Evento")
+
 
 //helpers
 const getToken = require("../helpers/get-token")
-const getUserByToken = require ('../helpers/get-user-by-token')
+const getUserByToken = require ("../helpers/get-user-by-token")
 
 module.exports = class EventoController{
+
+    //criação do evento
     static async create (req,res) {
         const { name, description, categoria,  data, hora, endereco} = req.body
 
@@ -52,7 +54,7 @@ module.exports = class EventoController{
           }
 
 
-          //resgatando o criado do evento 
+          //resgatando o criador do evento 
           const token = getToken(req)
           const user = await getUserByToken(token)
 
@@ -89,4 +91,34 @@ module.exports = class EventoController{
           }
       
     }
+
+    //Filtros
+
+    static async getAll(req,res) {
+        const eventos = await Evento.find().sort('-createdAt')//filtrando os eventos (mais recentes)
+        res.status(200).json({eventos: eventos,})
+
+    }
+
+    static async getAllUserEventos(req,res){
+        //regatando o token do usúario
+        const token = getToken(req)
+        const user = await getUserByToken(token)
+
+        const eventos = await Evento.find({'user._id': user._id}).sort('-createdAt');
+
+        res.status(200).json({eventos,})
+    }
+
+
+    static async getAllUserPaticipantes(req, res) {
+        //regatando o token do usúario
+        const token = getToken(req)
+        const user = await getUserByToken(token)
+
+        const eventos = await Evento.find({'participante._id': user._id}).sort('-createdAt');
+
+        res.status(200).json({ eventos,})
+    }
+
 }

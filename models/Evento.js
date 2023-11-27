@@ -36,7 +36,7 @@ const Evento = mongoose.model(
     available: {
       type: Boolean,
     },
-    users: Object,
+    user: Object,
     participante: Object,
   }, {timestamps: true}),
 )
