@@ -169,7 +169,7 @@ module.exports = class EventoController{
         const token = getToken(req)
         const user = await getUserByToken(token)
 
-        if (evento.user._id.toString() != user._id.toString()) {
+        if (evento.user._id.toString() !== user._id.toString()) {
             res.status(404).json({
               message:'Houve um problema em processar sua solicitação, tente novamente mais tarde!',})
               return
@@ -179,7 +179,96 @@ module.exports = class EventoController{
         //excluindo o evendo
         await Evento.findByIdAndDelete(id)
         res.status(200).json({ message: 'Evento removido com sucesso!'})
-        return
+        
+    }
+    static async updateEvento(req, res) {
+
+        const id = req.params.id
+
+        const { name, description, categoria,  data, hora, endereco,available} = req.body
+        
+        const images = req.files
+
+        const updateData = {}
+
+        //checando se o evento existe
+        const evento = await Evento.findOne({_id: id})
+
+        if(!evento) {
+            res.status(404).json({message: 'Evento não encontrado!'})
+            return
+        }
+
+         //checagem se foi o usúario que criou o evento
+
+         const token = getToken(req)
+         const user = await getUserByToken(token)
+ 
+         if (evento.user._id.toString() !== user._id.toString()) {
+            res.status(404).json({
+              message:'Houve um problema em processar sua solicitação, tente novamente mais tarde!',}) 
+              return    
+        }
+
+        //validações
+        if (!name) {
+            res.status(422).json({ message: 'O nome é obrigatório!' })
+            return
+          } else {
+            updateData.name = name
+          } 
+      
+          if (!description) {
+            res.status(422).json({ message: 'A descrição é obrigatória!' })
+            return
+          } else {
+            updateData.description = description
+          } 
+      
+          if (!categoria) {
+            res.status(422).json({ message: 'O categoria é obrigatória!' })
+            return
+          } else {
+            updateData.categoria = categoria
+          }
+
+      
+          if (!data) {
+            res.status(422).json({ message: 'A data é obrigatória!' })
+            return
+          } else {
+            updateData.data = data
+          }
+
+      
+          if (!hora) {
+            res.status(422).json({ message: 'A hora é obrigatória!' })
+            return
+          } else {
+            updateData.hora = hora
+          }
+
+          if (!endereco) {
+            res.status(422).json({ message: 'O  endereço é obrigatório!' })
+            return
+          } else {
+            updateData.endereco = endereco
+          }
+
+          if (images.length === 0) {
+            res.status(422).json({ message: 'A imagem é obrigatória!' })
+            return
+          } else {
+            updateData.images = []
+            images.map((image) => {
+            updateData.images.push(image.filename)    
+            })
+          }
+
+          await Evento.findByIdAndUpdate(id, updateData)
+          res.status(200).json({ message: 'Evento atualizado!'})
+
     }
 
+    
 }
