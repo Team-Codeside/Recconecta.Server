@@ -132,4 +132,21 @@ module.exports = class UserController {
                 } 
                 res.status(200).send(currentUser)
             }
+
+            //Resgatando usuário por Id
+
+            static async getUserById(req, res){
+
+                const id = req.params.id
+
+                const user = await User.findById(id).select("-password") //Removendo o campo da senha 
+
+                if (!user) {
+                    res.status(422).json({ message: 'Usuário não encontrado' })
+                    return
+                    }
+                    
+                    res.status(200).json({user})
+            }
+
     }
