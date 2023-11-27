@@ -157,7 +157,9 @@ module.exports = class UserController {
 
                 const{ name, email, cpf, data, password, confirmpassword} = req.body
 
-                let image = ''
+                if(req.file){
+                  user.image = req.file.filename 
+                }
 
             // Validação dos dados do usuário
 
@@ -174,10 +176,8 @@ module.exports = class UserController {
             // Verificando seu o email já foi cadastrado
             const userExists = await User.findOne({email: email}) 
 
-                if(!user.email !== email && userExists) {
-                    res.status(422).json({
-                        message: 'E-mail já cadastrado , por favor utilize outro e-mail!'
-                    })
+                if(user.email !== email && userExists) {
+                    res.status(422).json({message: 'E-mail já cadastrado , por favor utilize outro e-mail!'})
                     return 
                 }
                 user.email = email
