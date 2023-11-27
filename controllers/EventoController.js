@@ -1,11 +1,14 @@
-const Evento = require("..//models/Evento")
-const evento = require ("..//models/Evento")
+const Evento = require("../models/Evento")
+
 
 //helpers
 const getToken = require("../helpers/get-token")
-const getUserByToken = require ('../helpers/get-user-by-token')
+const getUserByToken = require ("../helpers/get-user-by-token")
+const ObjectId = require('mongoose').Types.ObjectId
 
 module.exports = class EventoController{
+
+    //criação do evento
     static async create (req,res) {
         const { name, description, categoria,  data, hora, endereco} = req.body
 
@@ -52,7 +55,7 @@ module.exports = class EventoController{
           }
 
 
-          //resgatando o criado do evento 
+          //resgatando o criador do evento 
           const token = getToken(req)
           const user = await getUserByToken(token)
 
@@ -88,5 +91,57 @@ module.exports = class EventoController{
             res.status(500).json({message: error})
           }
       
+    }
+
+    //Filtros
+
+    static async getAll(req,res) {
+        const eventos = await Evento.find().sort('-createdAt')//filtrando os eventos (mais recentes)
+        res.status(200).json({eventos: eventos,})
+
+    }
+
+    static async getAllUserEventos(req,res){
+        //regatando o token do usúario
+        const token = getToken(req)
+        const user = await getUserByToken(token)
+
+        const eventos = await Evento.find({'user._id': user._id}).sort('-createdAt');
+
+        res.status(200).json({eventos,})
+    }
+
+
+    static async getAllUserPaticipantes(req, res) {
+        //regatando o token do usúario
+        const token = getToken(req)
+        const user = await getUserByToken(token)
+
+        const eventos = await Evento.find({'participante._id': user._id}).sort('-createdAt');
+
+        res.status(200).json({ eventos,})
+    }
+
+    //id dos eventos
+
+    //Verficação do id/url do evento
+    static async getEventoById(req,res){
+        const id = req.params.id
+        
+        if(!ObjectId.isValid(id)) {
+            res.status(422).json({ message: 'ID inválido!' })
+            return
+        }
+
+        //checando se o evento existe
+        const evento = await Evento.findOne({_id: id})
+
+        if(!evento) {
+            res.status(404).json({message: 'Evento não encontrado!'})
+        }
+
+        res.status(200).json({
+            evento: evento, 
+        })   
     }
 }
