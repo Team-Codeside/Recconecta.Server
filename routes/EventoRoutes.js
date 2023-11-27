@@ -13,6 +13,6 @@ router.post('/create' , verifyToken,imageUpload.array('images'), EventoControlle
 router.get('/', EventoController.getAll) //Rota pública
 router.get('/myeventos', verifyToken, EventoController.getAllUserEventos)//resgatando todos os eventos do usúario
 router.get('/myparticipantes', verifyToken, EventoController.getAllUserPaticipantes)
-
+router.get('/:id', EventoController.getEventoById)
 
 module.exports = router

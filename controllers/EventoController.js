@@ -4,6 +4,7 @@ const Evento = require("../models/Evento")
 //helpers
 const getToken = require("../helpers/get-token")
 const getUserByToken = require ("../helpers/get-user-by-token")
+const ObjectId = require('mongoose').Types.ObjectId
 
 module.exports = class EventoController{
 
@@ -121,4 +122,26 @@ module.exports = class EventoController{
         res.status(200).json({ eventos,})
     }
 
+    //id dos eventos
+
+    //Verficação do id/url do evento
+    static async getEventoById(req,res){
+        const id = req.params.id
+        
+        if(!ObjectId.isValid(id)) {
+            res.status(422).json({ message: 'ID inválido!' })
+            return
+        }
+
+        //checando se o evento existe
+        const evento = await Evento.findOne({_id: id})
+
+        if(!evento) {
+            res.status(404).json({message: 'Evento não encontrado!'})
+        }
+
+        res.status(200).json({
+            evento: evento, 
+        })   
+    }
 }
