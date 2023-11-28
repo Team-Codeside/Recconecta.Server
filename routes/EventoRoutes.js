@@ -12,7 +12,9 @@ router.post('/create' , verifyToken,imageUpload.array('images'), EventoControlle
 
 router.get('/', EventoController.getAll) //Rota pública
 router.get('/myeventos', verifyToken, EventoController.getAllUserEventos)//resgatando todos os eventos do usúario
-router.get('/myparticipantes', verifyToken, EventoController.getAllUserPaticipantes)
-router.get('/:id', EventoController.getEventoById)
+router.get('/myparticipantes', verifyToken, EventoController.getAllUserPaticipantes)//inscrição nos eventos
+router.get('/:id', EventoController.getEventoById)//url dinânmica dos eventos
+router.delete('/:id', verifyToken, EventoController.removeEventoById)// Deletando eventos
+router.patch('/:id', verifyToken, imageUpload.array('images'), EventoController.updateEvento)
 
 module.exports = router
