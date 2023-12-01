@@ -181,6 +181,8 @@ module.exports = class EventoController{
         res.status(200).json({ message: 'Evento removido com sucesso!'})
         
     }
+
+    //atualizando informações do evento
     static async updateEvento(req, res) {
 
         const id = req.params.id
@@ -270,5 +272,84 @@ module.exports = class EventoController{
 
     }
 
-    
+    //realizando inscrição no evento
+
+    static async inscription(req, res) {
+
+        const id = req.params.id
+
+        //checando se o evento existe
+        const evento = await Evento.findOne({_id: id})
+
+        if(!evento) {
+            res.status(404).json({message: 'Evento não encontrado!'})
+            return
+        }
+
+         //checagem se foi o usúario que criou o evento
+
+         const token = getToken(req)
+         const user = await getUserByToken(token)
+ 
+         if (evento.user._id.equals(user._id)) {
+            res.status(422).json({
+              message:'Você não pode se inscrever no próprio evento',}) 
+              return    
+        }
+
+        //checagem se o usúario já esta inscrito no evento
+
+        if(evento.participante) {
+            if(evento.participante._id.equals(user._id)) {
+                res.status(404).json({
+                    message:'Você já está inscrito neste evento',}) 
+                    return 
+            }
+        }
+        
+        //adicionando usúario a isncrição do evento
+        evento.participante = {
+            _id: user._id,
+            name: user.name,
+            image:user.image
+        }
+
+        await Evento.findByIdAndUpdate(id, evento)
+
+        res.status(200).json({
+            message: `inscrição realizada, para mais informações entre em contato com ${evento.user.name} pelo e-mail ${evento.user.email}`
+        })
+    }
+
+
+    //concluindo evento 
+
+    static async concludeEvento (req,res){
+        const id = req.params.id 
+        //checando se o evento existe
+        const evento = await Evento.findOne({_id: id})
+
+        if(!evento) {
+            res.status(404).json({message: 'Evento não encontrado!'})
+            return
+        }
+         //checagem se foi o usúario que criou o evento
+
+         const token = getToken(req)
+         const user = await getUserByToken(token)
+ 
+         if (evento.user._id.toString() !== user._id.toString()) {
+            res.status(422).json({
+              message:'Houve um problema em processar sua solicitação, tente novamente mais tarde!',}) 
+              return    
+        }
+
+        evento.available = false
+
+        await Evento.findByIdAndUpdate(id,evento)
+        res.status(200).json ({
+            message: 'Evento finalizado com sucesso'
+        })
+    }
+
 }
