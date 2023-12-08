@@ -12,7 +12,7 @@ const imageStorage = multer.diskStorage({
         folder = "eventos"
     }
 
-    cb(null, `public/images/${folder}`)  //retorno 
+    cb(null, `public/images/${folder}`)  //pasta retorno 
 },
 
 //Nome do arquivo depois de salvo

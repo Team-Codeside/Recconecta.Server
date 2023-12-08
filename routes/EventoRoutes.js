@@ -18,5 +18,6 @@ router.delete('/:id', verifyToken, EventoController.removeEventoById)// Deletand
 router.patch('/:id', verifyToken, imageUpload.array('images'), EventoController.updateEvento)//atualizando eventos
 router.patch('/inscription/:id', verifyToken, EventoController.inscription)//Realizando inscrições nos eventos
 router.patch('/conclude/:id', verifyToken, EventoController.concludeEvento)//concluindo o evento
+router.get('/pesquisa/:query', EventoController.pesquisarEvento)
 
 module.exports = router

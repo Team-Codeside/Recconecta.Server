@@ -7,7 +7,7 @@ const createUserToken = async(user, req ,res) => {
         name: user.name,
         id: user._id,
     }, 
-    'mysecret',//Fortificação do toker obs:alterar para uma string mais complexa
+    'mysecret',//Fortificação do token obs:alterar para uma string mais complexa
     ) 
 
     //Resposta do token
