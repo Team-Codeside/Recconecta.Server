@@ -13,9 +13,13 @@ module.exports = class UserController {
             const name = req.body.name
             const email = req.body.email
             const cpf = req.body.cpf
-            const data = req.body.data
+            const datanasc = req.body.datanasc
             const password = req.body.password
             const confirmpassword = req.body.confirmpassword
+
+            if (req.file) {
+                user.image = req.file.filename 
+              }
         
             // Validação dos campos
             if (!name) {
@@ -27,16 +31,6 @@ module.exports = class UserController {
                 res.status(422).json({ message: 'O e-mail é obrigatório!' })
                 return
             }
-        
-            if (!cpf) {
-                res.status(422).json({ message: 'O CPF é obrigatório!' })
-                return
-            }
-            if (!data) {
-                res.status(422).json({ message: 'O Data é obrigatório!' })
-                return
-            }
-        
             if (!password) {
                 res.status(422).json({ message: 'A senha é obrigatória!' })
                 return
@@ -53,6 +47,17 @@ module.exports = class UserController {
                 .json({ message: 'A senha e a confirmação precisam ser iguais!' })
                 return
             }
+        
+            if (!cpf) {
+                res.status(422).json({ message: 'O CPF é obrigatório!' })
+                return
+            }
+            if (!datanasc) {
+                res.status(422).json({ message: 'O Data é obrigatório!' })
+                return
+            }
+        
+            
 
             // Checagem de existência do usuário
             const userExists = await User.findOne({ email: email })
@@ -71,7 +76,7 @@ module.exports = class UserController {
             name,
             email,
             cpf,
-            data,
+            datanasc,
             password: passwordHash,
             })
 
@@ -155,7 +160,7 @@ module.exports = class UserController {
                 const user = await getUserByToken(token)
 
 
-                const{ name, email, cpf, data, password, confirmpassword} = req.body
+                const{ name, email, cpf, datanasc, password, confirmpassword} = req.body
 
                 if(req.file){
                   user.image = req.file.filename 
@@ -190,12 +195,12 @@ module.exports = class UserController {
 
             user.cpf = cpf
 
-            if (!data) {
-                res.status(422).json({ message: 'O Data é obrigatório!' })
+            if (!datanasc) {
+                res.status(422).json({ message: 'A Data de nascimento é obrigatória!' })
                 return
             }
 
-            user.data = data
+            user.datanasc = datanasc
 
             if(password != confirmpassword) {
                 res.status(422).json({ message: 'As senhas não conferem!' })

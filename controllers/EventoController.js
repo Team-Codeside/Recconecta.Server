@@ -1,6 +1,5 @@
 const Evento = require("../models/Evento")
 
-
 //helpers
 const getToken = require("../helpers/get-token")
 const getUserByToken = require ("../helpers/get-user-by-token")
@@ -10,7 +9,7 @@ module.exports = class EventoController{
 
     //criação do evento
     static async create (req,res) {
-        const { name, description, categoria,  data, hora, endereco} = req.body
+        const { name, description, categoria,  dataev, hora, endereco} = req.body
 
         const images = req.files
 
@@ -32,11 +31,11 @@ module.exports = class EventoController{
           }
       
           if (!categoria) {
-            res.status(422).json({ message: 'O categoria é obrigatória!' })
+            res.status(422).json({ message: 'A categoria é obrigatória!' })
             return
           }
       
-          if (!data) {
+          if (!dataev) {
             res.status(422).json({ message: 'A data é obrigatória!' })
             return
           }
@@ -46,7 +45,7 @@ module.exports = class EventoController{
             return
           }
           if (!endereco) {
-            res.status(422).json({ message: 'O  endereço é obrigatório!' })
+            res.status(422).json({ message: 'A localização é obrigatória!' })
             return
           }
           if (images.length === 0) {
@@ -65,7 +64,7 @@ module.exports = class EventoController{
             name,
             description,
             categoria,
-            data,
+            dataev, 
             hora,
             endereco,
             available,
@@ -187,7 +186,7 @@ module.exports = class EventoController{
 
         const id = req.params.id
 
-        const { name, description, categoria,  data, hora, endereco,available} = req.body
+        const { name, description, categoria, dataev, hora, endereco,available} = req.body
         
         const images = req.files
 
@@ -239,7 +238,7 @@ module.exports = class EventoController{
             res.status(422).json({ message: 'A data é obrigatória!' })
             return
           } else {
-            updateData.data = data
+            updateData.dataev = dataev
           }
 
       
@@ -350,6 +349,22 @@ module.exports = class EventoController{
         res.status(200).json ({
             message: 'Evento finalizado com sucesso'
         })
+    }
+
+    static async pesquisarEvento(req, res) {
+      const query = req.params.query; 
+      if (!query) {
+        res.status(400).json({ message: 'Valor de pesquisa não fornecido' });
+        return;
+      }
+    
+      try {
+        const eventos = await Evento.find({ name: { $regex: new RegExp(query, 'i') } });
+    
+        res.status(200).json({ eventos });
+      } catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar evento', error });
+      }
     }
 
 }

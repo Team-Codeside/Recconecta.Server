@@ -1,7 +1,7 @@
 const mongoose = require('../db/conn')
 const { Schema } = mongoose
 
-const Evento = mongoose.model(
+const Evento = mongoose.model( 
   'Evento',
   new Schema({
     name: {
@@ -16,7 +16,7 @@ const Evento = mongoose.model(
         type: String,
         required: true,
       },
-    data: {
+      dataev: {
       type: String,
       required: true,
     },
@@ -41,4 +41,4 @@ const Evento = mongoose.model(
   }, {timestamps: true}),
 )
 
-module.exports = Evento
+module.exports = Evento 

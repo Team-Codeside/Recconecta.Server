@@ -5,15 +5,15 @@ const bodyParse = require('body-parser')
 //config resposta JSON
 const app = express ()
 
-// solve CORS
-app.use(cors({ credentials: true, origin: 'http://locallhost:3000'}))
+// resolver CORS
+app.use(cors({ credentials: true, origin: '*'}))
 app.use(bodyParse.json())
 
-//Public folder for images 
+//Pasta pública para imagens
 
 app.use (express.static('public'))
 
-//routes 
+//Rotas 
 const UserRoutes = require ('./routes/UserRoutes')
 const EventoRoutes = require('./routes/EventoRoutes')
 
