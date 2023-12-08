@@ -20,8 +20,8 @@ const User = mongoose.model(
       type: String,
       required: true,
     },
-    data:{
-      type: Date,
+    datanasc:{
+      type: String,
       required: true,
     },
     image: {
